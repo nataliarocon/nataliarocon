@@ -1,0 +1,121 @@
+ // adicione o código abaixo direto no arquivo single.php
+
+<div class="opina">Junte-se à nossa missão de alcançar o bem-estar pleno! Deixe o seu Comentário, Crítica ou Opinião.</div>
+
+<form class="formulario-comentarios" action="<?php echo site_url('/wp-comments-post.php'); ?>" method="post" id="comments-form">
+<fieldset class="grid">
+  <div class="form-group grid-6">
+    <label for="author">Nome / Apelido</label>
+    <input type="text" class="form-control" name="author" id="author" required>
+  </div>
+  <div class="form-group grid-6">
+    <label for="email">Email</label>
+    <input type="email" class="form-control" name="email" id="email" required>
+  </div>
+  <div class="form-group grid-12">
+    <label for="comment">Comentário / Crítica / Opinião</label>
+    <textarea class="form-control" name="comment" id="comment" rows="5" required></textarea>
+  </div>
+  <input type="hidden" name="comment_post_ID" value="<?php echo get_the_ID(); ?>">
+  <input type="hidden" name="comment_parent" id="comment_parent" value="0">
+  <?php wp_nonce_field('new-comment', 'new-comment-nonce'); ?>
+  <button type="submit" class="btn btn-primary">Enviar</button>
+  </fieldset>
+</form>
+
+
+
+// exibe a lista de comentários aprovados
+
+<?php 
+$args = array( 
+  'status' => 'approve', 
+  'post_id' => get_the_ID(),
+); 
+$comments_query = new WP_Comment_Query; 
+$comments = $comments_query->query( $args );
+?>
+<?php if ( $comments ): ?>
+
+
+<h3 id="total"><?php comments_number('Até o momento, não houve nenhuma contribuição de comentários', 'Até agora, uma pessoa comentou', 'Até o momento, % indivíduos já deram sua opinião'); ?></h3>
+
+  <ol id="comments" class="post-comments">
+    <?php foreach ( $comments as $comment ): ?>
+      <li id="c-<?php echo $comment->comment_ID; ?>" class="post-comment">
+        <div class="comment-content">
+          <div class="comment-meta">
+            <p class="comment-author">
+              <span><?php $get_title = get_comment_author(); $ltr_group = substr($get_title, 0, 1); echo $ltr_group; ?></span> 
+              <?php echo $comment->comment_author; ?>
+            </p> 
+            <p class="comment-date"> <?php echo get_comment_date('j \d\e F \d\e Y, H:i'); ?></p>
+          </div> 
+          <p class="comment-text"><?php echo $comment->comment_content; ?></p> 
+        </div>
+      </li>
+    <?php endforeach; ?>
+  </ol>
+<?php else: ?>
+<?php endif; ?>
+
+
+// css do formulário e da lista de comentários
+
+
+<style>
+.formulario-comentarios{background: #fff;border: 1px solid #dadada;border-radius: 5px;margin-bottom: 10px}
+.formulario-comentarios label{font-size: 15px;font-weight: 700;text-transform: uppercase;}
+.formulario-comentarios input[type="text"],
+.formulario-comentarios input[type="email"],
+.formulario-comentarios input[type="tel"],
+.formulario-comentarios input[type="url"],
+.formulario-comentarios textarea {
+    width:100%;
+    border:1px solid #DDE4EB;
+    background:#FFF;
+    margin:0 0 15px;font-size:16px;
+    padding:10px;border-radius: 5px;transition: background-color .2s ease, border .2s ease;background-color: #f5f6f7;
+}
+
+.formulario-comentarios fieldset{padding: 15px;}
+.formulario-comentarios legend{font-size: 20px;font-weight: 700;border-bottom: 1px solid #dadada;width: 100%;display: block;}
+
+
+.formulario-comentarios textarea {
+   max-height: 80px;
+    max-width:100%;
+  resize:none;word-break: break-word;
+    overflow: hidden;white-space: pre-wrap;-webkit-overflow-scrolling: touch;
+}
+.formulario-comentarios button[type="submit"] {
+    cursor:pointer;
+    width:100%;
+    border:none;
+    background:#ff006d;font-weight: 700;
+    color:#FFF;
+    margin:0 0 5px;border-radius: 5px;
+    padding:10px;
+    font-size:15px;display: block;
+}
+.formulario-comentarios button[type="submit"]:hover {
+    background:#494949;
+    -webkit-transition:background 0.3s ease-in-out;
+    -moz-transition:background 0.3s ease-in-out;
+    transition:background-color 0.3s ease-in-out;
+}
+.formulario-comentarios button[type="submit"]:active { box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.5); }
+.formulario-comentarios input:focus, .formulario-comentarios textarea:focus {
+    outline:0;
+    border:1px solid #999;
+}
+
+
+ol.post-comments{background: #fff;border: 1px solid #dadada;border-radius: 5px;margin-bottom: 10px;}
+ol.post-comments li{list-style: none;border-bottom: 1px solid #dadada;margin:0;padding: 15px;}
+.post-comments .comment-author{font-size: 20px;font-weight: 700;margin: 0;padding: 0}
+.post-comments .comment-author span{ border-radius: 3px;transition: background-color .2s ease, border .2s ease;background-color: #ff006d;color: #fff;padding: 3px;padding-left: 10px;padding-right: 10px;}
+.post-comments .comment-date{font-size: 13px;font-weight: 700;color: #666;text-transform: uppercase;margin: 0;padding: 0}
+.post-comments .comment-text{font-size: 16px;line-height: 22px}
+h3#total{background: #fff;border: 1px solid #dadada;border-radius: 5px;padding: 15px;}
+</style>
